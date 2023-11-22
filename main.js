@@ -22,6 +22,15 @@ for (let i = 4; i < size; i++) {
   prevValue = min
 }
 
+const segment = {
+  borderColor: ctx => {
+    return ctx.p0.raw.temp || ctx.p1.raw.temp ? 'rgb(0, 0, 0, 0.2)' : undefined
+  },
+  borderDash: ctx => {
+    return ctx.p0.raw.temp || ctx.p1.raw.temp ? [5, 6] : undefined
+  }
+}
+
 const config =  {
   type: 'line',
   options: {
@@ -54,7 +63,9 @@ const config =  {
           xAxisKey: "min",
           yAxisKey: "time"
         },
-        fill: 1
+        fill: 0,
+        segment,
+        //spanGaps: true
       },
       {
         label: 'Test (max)',
@@ -66,6 +77,7 @@ const config =  {
           yAxisKey: "time"
         },
         fill: false,
+        segment,
         hidden: false
       }
     ]
@@ -78,6 +90,7 @@ const myChart = new Chart(
 )
 
 const chunkSize = 100
+const diffSize = 30
 let offset = 0
 let diffOffset = 0
 let loadTimeout
@@ -96,12 +109,30 @@ function updateData() {
   myChart.data.datasets.forEach(dataset => {
     const fromIndex = diffOffset > 0 ? diffOffset : 0
     const toIndex = diffOffset > 0 ? dataset.data.length : dataset.data.length + diffOffset
-    console.log({ fromIndex, toIndex })
     dataset.data = dataset.data.slice(fromIndex, toIndex)
+
+    if (diffOffset === 0) {
+      return
+    }
+
+    const lastValue = diffOffset > 0 ? dataset.data[dataset.data.length - 1] : dataset.data[0]
+    const item = {
+      time: lastValue.time + diffOffset,
+      min: lastValue.min,
+      max: lastValue.max,
+      temp: true
+    }
+
+    if (diffOffset > 0) {
+      dataset.data.push(item)
+    } else {
+      dataset.data.unshift(item)
+    }
   })
   myChart.update()
 
   loadTimeout = setTimeout(() => {
+    console.log('Loaded')
     myChart.data.datasets.forEach(dataset => {
       dataset.data = axisData.slice()
     })
@@ -110,13 +141,13 @@ function updateData() {
 }
 
 document.querySelector('#scrollDown').addEventListener('click', () => {
-  diffOffset = 10
+  diffOffset = diffSize
   console.log({ offset })
   updateData()
 })
 
 document.querySelector('#scrollUp').addEventListener('click', () => {
-  diffOffset = -10
+  diffOffset = -diffSize
   console.log({ offset })
   updateData()
 })
