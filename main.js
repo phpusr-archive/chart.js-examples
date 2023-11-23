@@ -30,7 +30,7 @@ const segment = {
     return ctx.p0.raw.temp || ctx.p1.raw.temp ? 'rgb(0, 0, 0, 0.2)' : undefined
   },
   borderDash: ctx => {
-    return ctx.p0.raw.temp || ctx.p1.raw.temp ? [5, 6] : undefined
+    return ctx.p0.raw.temp || ctx.p1.raw.temp ? [6, 6] : undefined
   }
 }
 
@@ -66,7 +66,7 @@ const config =  {
           xAxisKey: "min",
           yAxisKey: "time"
         },
-        fill: 0,
+        fill: 1,
         segment,
         //spanGaps: true
       },
@@ -97,6 +97,7 @@ const diffSize = 30
 let offset = 0
 let loadTimeout
 let lastValue = null
+let datasetFills = {}
 
 updateData()
 
@@ -114,8 +115,13 @@ function updateData(diffOffset = 0) {
   const axisData = data.slice(offset, offset + chunkSize)
   myChart.data.labels = axisData.map(it => it.time)
   myChart.data.datasets.forEach(dataset => {
+    if (dataset.fill !== false) {
+      datasetFills[dataset.label] = dataset.fill
+    }
+    dataset.fill = false
+
     if (diffOffset === 0) {
-      dataset.data = axisData
+      dataset.data = []
       return
     }
 
@@ -166,6 +172,7 @@ function updateData(diffOffset = 0) {
   loadTimeout = setTimeout(() => {
     console.log('Loaded')
     myChart.data.datasets.forEach(dataset => {
+      dataset.fill = datasetFills[dataset.label]
       dataset.data = axisData.slice()
     })
     myChart.update()
