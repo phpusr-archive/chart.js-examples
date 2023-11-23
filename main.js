@@ -7,19 +7,21 @@ const data = [
 
 const size = 2000
 const minValue = 0
-const maxValue = 1000
+const maxValue = 100
 let prevValue = 20
 for (let i = 4; i < size; i++) {
   const up = Math.random() > 0.5
-  const diff = Math.random() * 10
+
+  const diff = Math.random() * 100
+
   let min = prevValue + (diff * up ? 1 : -1)
-  min = min > 0 ? min : 0
-  const max = min + Math.random() * 2
-  data.push({
-    time: i,
-    min,
-    max
-  })
+  min = min > minValue ? min : minValue
+  min = min < maxValue ? min : maxValue
+
+  let max = min + Math.random() * 2
+  max = max < maxValue ? max : maxValue
+
+  data.push({ time: i, min, max })
   prevValue = min
 }
 
