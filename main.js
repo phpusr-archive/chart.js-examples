@@ -18,7 +18,7 @@ for (let i = 4; i < size; i++) {
   min = min > minValue ? min : minValue
   min = min < maxValue ? min : maxValue
 
-  let max = min + Math.random() * 2
+  let max = min + Math.random() * 0.1
   max = max < maxValue ? max : maxValue
 
   data.push({ time: i, min, max })
@@ -93,7 +93,8 @@ const myChart = new Chart(
 )
 
 const chunkSize = 100
-const diffSize = 30
+const diffSize = 10
+const loadTime = 200
 let offset = 0
 let loadTimeout
 let lastValue = null
@@ -103,7 +104,7 @@ updateData()
 
 
 function updateData(diffOffset = 0) {
-  if (offset <= 0 && diffOffset < 0) {
+  if (offset <= 0 && diffOffset < 0 || offset + diffOffset > data.length) {
     return
   }
 
@@ -176,8 +177,13 @@ function updateData(diffOffset = 0) {
       dataset.data = axisData.slice()
     })
     myChart.update()
-  }, 500)
+  }, loadTime)
 }
+
+document.querySelector('#myChart').addEventListener('wheel', ({ deltaY }) => {
+  const value = deltaY > 0 ? diffSize : -diffSize
+  updateData(value)
+})
 
 document.querySelector('#scrollDown').addEventListener('click', () => {
   updateData(diffSize)
