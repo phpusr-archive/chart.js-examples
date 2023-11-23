@@ -12,7 +12,8 @@ let prevValue = 20
 for (let i = 4; i < size; i++) {
   const up = Math.random() > 0.5
   const diff = Math.random() * 10
-  const min = prevValue + (diff * up ? 1 : -1)
+  let min = prevValue + (diff * up ? 1 : -1)
+  min = min > 0 ? min : 0
   const max = min + Math.random() * 2
   data.push({
     time: i,
@@ -92,13 +93,17 @@ const myChart = new Chart(
 const chunkSize = 100
 const diffSize = 30
 let offset = 0
-let diffOffset = 0
 let loadTimeout
+let lastValue = null
 
 updateData()
 
 
-function updateData() {
+function updateData(diffOffset = 0) {
+  if (offset <= 0 && diffOffset < 0) {
+    return
+  }
+
   if (loadTimeout) {
     clearTimeout(loadTimeout)
   }
@@ -107,28 +112,53 @@ function updateData() {
   const axisData = data.slice(offset, offset + chunkSize)
   myChart.data.labels = axisData.map(it => it.time)
   myChart.data.datasets.forEach(dataset => {
-    const fromIndex = diffOffset > 0 ? diffOffset : 0
-    const toIndex = diffOffset > 0 ? dataset.data.length : dataset.data.length + diffOffset
-    dataset.data = dataset.data.slice(fromIndex, toIndex)
-
     if (diffOffset === 0) {
+      dataset.data = axisData
       return
     }
 
-    const lastValue = diffOffset > 0 ? dataset.data[dataset.data.length - 1] : dataset.data[0]
-    const item = {
-      time: lastValue.time + diffOffset,
+    if (diffOffset > 0) {
+      dataset.data = dataset.data.slice(diffOffset, dataset.data.length)
+      lastValue = dataset.data[dataset.data.length - 1] || lastValue
+
+      if (dataset.data.length === 0) {
+        dataset.data.push({
+          time: offset,
+          min: lastValue.min,
+          max: lastValue.max,
+          temp: true
+        })
+      }
+
+      dataset.data.push({
+        time: offset + chunkSize,
+        min: lastValue.min,
+        max: lastValue.max,
+        temp: true
+      })
+      return
+    }
+
+    dataset.data = dataset.data.slice(0, dataset.data.length + diffOffset)
+    lastValue = dataset.data[0] || lastValue
+
+    dataset.data.unshift({
+      time: offset,
       min: lastValue.min,
       max: lastValue.max,
       temp: true
-    }
+    })
 
-    if (diffOffset > 0) {
-      dataset.data.push(item)
-    } else {
-      dataset.data.unshift(item)
+    if (dataset.data.length === 1) {
+      dataset.data.push({
+        time: offset + chunkSize,
+        min: lastValue.min,
+        max: lastValue.max,
+        temp: true
+      })
     }
   })
+
   myChart.update()
 
   loadTimeout = setTimeout(() => {
@@ -141,13 +171,9 @@ function updateData() {
 }
 
 document.querySelector('#scrollDown').addEventListener('click', () => {
-  diffOffset = diffSize
-  console.log({ offset })
-  updateData()
+  updateData(diffSize)
 })
 
 document.querySelector('#scrollUp').addEventListener('click', () => {
-  diffOffset = -diffSize
-  console.log({ offset })
-  updateData()
+  updateData(-diffSize)
 })
