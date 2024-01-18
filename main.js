@@ -1,29 +1,36 @@
 
-const data = [
-  { time: 1, min: 0, max: 0 },
-  { time: 2, min: 10, max: 12 },
-  { time: 3, min: 15, max: 17 }
-]
+const lineCount = 20
+const size = 20000
+const chunkSize = 1000
+const diffSize = 30
+const loadTime = 0
 
-const size = 2000
 const minValue = 0
 const maxValue = 100
-let prevValue = 20
-for (let i = 4; i < size; i++) {
-  const up = Math.random() > 0.5
+const data = []
 
-  const diff = Math.random() * 100
+for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
+  const lineData = []
+  data.push(lineData)
+  let prevValue = 20
+  for (let i = 0; i < size; i++) {
+    const up = Math.random() > 0.5
 
-  let min = prevValue + (diff * up ? 1 : -1)
-  min = min > minValue ? min : minValue
-  min = min < maxValue ? min : maxValue
+    const diff = Math.random() * 100
 
-  let max = min + Math.random() * 0.1
-  max = max < maxValue ? max : maxValue
+    let min = prevValue + (diff * up ? 1 : -1)
+    min = min > minValue ? min : minValue
+    min = min < maxValue ? min : maxValue
 
-  data.push({ time: i, min, max })
-  prevValue = min
+    let max = min + Math.random() * 0.1
+    max = max < maxValue ? max : maxValue
+
+    lineData.push({ time: i, min, max })
+    prevValue = min
+  }
 }
+
+console.log('data', data)
 
 const segment = {
   borderColor: ctx => {
@@ -56,35 +63,37 @@ const config =  {
   },
   data: {
     labels: [],
-    datasets: [
-      {
-        label: 'Test (min)',
-        backgroundColor: "#693a9d",
-        borderColor: "#693a9d",
-        data: [],
-        parsing: {
-          xAxisKey: "min",
-          yAxisKey: "time"
-        },
-        fill: 1,
-        segment,
-        //spanGaps: true
-      },
-      {
-        label: 'Test (max)',
-        backgroundColor: "#693a9d",
-        borderColor: "#693a9d",
-        data: [],
-        parsing: {
-          xAxisKey: "max",
-          yAxisKey: "time"
-        },
-        fill: false,
-        segment,
-        hidden: false
-      }
-    ]
+    datasets: []
   }
+}
+
+for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
+  config.data.datasets.push({
+    label: `Line ${lineIndex} (min)`,
+    //backgroundColor: "#693a9d",
+    //borderColor: "#693a9d",
+    data: [],
+    parsing: {
+      xAxisKey: "min",
+      yAxisKey: "time"
+    },
+    fill: lineIndex * 2 + 1,
+    segment,
+    //spanGaps: true
+  })
+  config.data.datasets.push({
+    label: `Line ${lineIndex} (max)`,
+    //backgroundColor: "#693a9d",
+    //borderColor: "#693a9d",
+    data: [],
+    parsing: {
+      xAxisKey: "max",
+      yAxisKey: "time"
+    },
+    fill: false,
+    segment,
+    hidden: false
+  })
 }
 
 const myChart = new Chart(
@@ -92,9 +101,6 @@ const myChart = new Chart(
   config
 )
 
-const chunkSize = 100
-const diffSize = 10
-const loadTime = 200
 let offset = 0
 let loadTimeout
 let lastValue = null
@@ -104,7 +110,7 @@ updateData()
 
 
 function updateData(diffOffset = 0) {
-  if (offset <= 0 && diffOffset < 0 || offset + diffOffset > data.length) {
+  if (offset <= 0 && diffOffset < 0 || offset + diffOffset > data[0].length) {
     return
   }
 
@@ -113,8 +119,7 @@ function updateData(diffOffset = 0) {
   }
 
   offset += diffOffset
-  const axisData = data.slice(offset, offset + chunkSize)
-  myChart.data.labels = axisData.map(it => it.time)
+  myChart.data.labels = data[0].slice(offset, offset + chunkSize).map(it => it.time)
   myChart.data.datasets.forEach(dataset => {
     if (dataset.fill !== false) {
       datasetFills[dataset.label] = dataset.fill
@@ -170,11 +175,13 @@ function updateData(diffOffset = 0) {
 
   myChart.update()
 
+  const offsetLocal = offset
   loadTimeout = setTimeout(() => {
     console.log('Loaded')
-    myChart.data.datasets.forEach(dataset => {
+    myChart.data.datasets.forEach((dataset, datasetIndex) => {
+      const dataIndex = Math.floor(datasetIndex / 2)
       dataset.fill = datasetFills[dataset.label]
-      dataset.data = axisData.slice()
+      dataset.data = data[dataIndex].slice(offsetLocal, offsetLocal + chunkSize)
     })
     myChart.update()
   }, loadTime)
