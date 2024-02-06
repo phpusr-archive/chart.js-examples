@@ -1,5 +1,5 @@
 
-const lineCount = 1
+const lineCount = 20
 const size = 20000
 const chunkSize = 1000
 const diffSize = 30
@@ -25,15 +25,13 @@ for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
     let max = min + Math.random() * 0.1
     max = max < maxValue ? max : maxValue
 
-    lineData.push({ time: i, value: min })
-    lineData.push({ time: i, value: max })
+    lineData.push({ time: i, min, max })
     prevValue = min
   }
 }
 
 console.log('data', data)
 
-// Изменение цвета и стиля графика при прокрутке
 const segment = {
   borderColor: ctx => {
     return ctx.p0.raw.temp || ctx.p1.raw.temp ? 'rgb(0, 0, 0, 0.2)' : undefined
@@ -76,14 +74,14 @@ for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
     //borderColor: "#693a9d",
     data: [],
     parsing: {
-      xAxisKey: "value",
+      xAxisKey: "min",
       yAxisKey: "time"
     },
-    //fill: lineIndex * 2 + 1,
+    fill: lineIndex * 2 + 1,
     segment,
     //spanGaps: true
   })
-  /*config.data.datasets.push({
+  config.data.datasets.push({
     label: `Line ${lineIndex} (max)`,
     //backgroundColor: "#693a9d",
     //borderColor: "#693a9d",
@@ -95,7 +93,7 @@ for (let lineIndex = 0; lineIndex < lineCount; lineIndex++) {
     fill: false,
     segment,
     hidden: false
-  })*/
+  })
 }
 
 const myChart = new Chart(
@@ -121,8 +119,7 @@ function updateData(diffOffset = 0) {
   }
 
   offset += diffOffset
-  const labels = data[0].slice(offset, offset + chunkSize).map(it => it.time)
-  myChart.data.labels = [...new Set(labels)]
+  myChart.data.labels = data[0].slice(offset, offset + chunkSize).map(it => it.time)
   myChart.data.datasets.forEach(dataset => {
     if (dataset.fill !== false) {
       datasetFills[dataset.label] = dataset.fill
@@ -141,14 +138,16 @@ function updateData(diffOffset = 0) {
       if (dataset.data.length === 0) {
         dataset.data.push({
           time: offset,
-          value: lastValue.value,
+          min: lastValue.min,
+          max: lastValue.max,
           temp: true
         })
       }
 
       dataset.data.push({
         time: offset + chunkSize,
-        value: lastValue.value,
+        min: lastValue.min,
+        max: lastValue.max,
         temp: true
       })
       return
@@ -159,14 +158,16 @@ function updateData(diffOffset = 0) {
 
     dataset.data.unshift({
       time: offset,
-      value: lastValue.value,
+      min: lastValue.min,
+      max: lastValue.max,
       temp: true
     })
 
     if (dataset.data.length === 1) {
       dataset.data.push({
         time: offset + chunkSize,
-        value: lastValue.value,
+        min: lastValue.min,
+        max: lastValue.max,
         temp: true
       })
     }

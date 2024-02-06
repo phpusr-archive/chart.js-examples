@@ -22,15 +22,7 @@
 new Chart(document.querySelector('#myChart'), {
   type: 'line',
   options: {
-    indexAxis: 'y',
-    elements: {
-      point: {
-        radius: 1
-      },
-      line: {
-        borderWidth: 2
-      }
-    }
+    indexAxis: 'y'
   },
   data: {
     labels: [2, 3, 4, 5, 6, 7, 8, 9],
@@ -38,9 +30,18 @@ new Chart(document.querySelector('#myChart'), {
       {
         label: 'Test',
         data: [
-          { y: 3, x: 5 },
-          { y: 3, x: 5.1 },
-          { y: 4, x: 100 },
+          { x: 5, y: 0 },
+          { x: 6, y: 1 },
+          { x: 10, y: 2 },
+          { x: 30, y: 3 },
+          { x: 20, y: 4 },
+          { x: 30, y: 5 },
+          { x: 35, y: 6 },
+          { x: 20, y: 7 },
+          { x: 15, y: 8 },
+          { x: 10, y: 9 },
+          { x: 12, y: 10 },
+          { x: 10, y: 11 },
         ]
       }
     ]
