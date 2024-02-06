@@ -26,19 +26,15 @@ new Chart(document.querySelector('#myChart'), {
     scales: {
       normX: {
         axis: 'x',
-        id: 'normX',
         min: 0,
         max: 10,
-        reverse: false,
-        title: 'Norm'
+        reverse: false
       },
       revX: {
         axis: 'x',
-        id: 'revX',
         min: 0,
         max: 20,
-        reverse: true,
-        title: 'Reversed'
+        reverse: true
       }
     }
   },
@@ -47,7 +43,7 @@ new Chart(document.querySelector('#myChart'), {
     datasets: [
       {
         label: 'Test',
-        xAxisID: 'nomrX',
+        xAxisID: 'normX',
         data: [
           { y: 3, x: 5 },
           { y: 4, x: 5.1 },
