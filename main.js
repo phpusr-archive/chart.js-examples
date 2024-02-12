@@ -1,5 +1,5 @@
 const chartCount = 3
-const lineCount = 10
+const lineCount = 20
 const size = 20000
 const chunkSize = 600
 const diffSize = 30
@@ -73,6 +73,16 @@ const charts = data.map((chartData, chartIndex) => {
         x: {
           min: 0,
           max: 100,
+          ticks: {
+            minRotation: 0,
+            maxRotation: 0
+          }
+        },
+        y: {
+          ticks: {
+            minRotation: 0,
+            maxRotation: 0
+          }
         }
       },
       plugins: {
