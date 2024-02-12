@@ -60,6 +60,7 @@ const charts = data.map((chartData, chartIndex) => {
     type: 'line',
     options: {
       animation: false,
+      spanGaps: true,
       indexAxis: 'y',
       elements: {
         point: {
