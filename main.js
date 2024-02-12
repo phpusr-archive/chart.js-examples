@@ -61,7 +61,13 @@ const charts = data.map((chartData, chartIndex) => {
     options: {
       animation: false,
       spanGaps: true,
+      showLine: true,
       indexAxis: 'y',
+      datasets: {
+        line: {
+          pointRadius: 0
+        }
+      },
       elements: {
         point: {
           radius: 0
