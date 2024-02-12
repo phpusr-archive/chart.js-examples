@@ -75,13 +75,15 @@ const charts = data.map((chartData, chartIndex) => {
           max: 100,
           ticks: {
             minRotation: 0,
-            maxRotation: 0
+            maxRotation: 0,
+            sampleSize: 1
           }
         },
         y: {
           ticks: {
             minRotation: 0,
-            maxRotation: 0
+            maxRotation: 0,
+            sampleSize: 1
           }
         }
       },
