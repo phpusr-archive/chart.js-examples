@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <!--suppress JSUnresolvedLibraryURL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+</head>
+<body>
+
+<h1>Chart.js with Worker</h1>
+<div id="container">
+  <canvas id="chart" height="800px" width="600px"></canvas>
+</div>
+
+<script>
+  // https://www.chartjs.org/docs/latest/general/performance.html
+  // https://stackoverflow.com/questions/63795576/using-chart-js-in-web-worker
+
+  const config = {
+    type: 'line',
+    options: {
+      indexAxis: 'y'
+    },
+    data: {
+      labels: [2, 3, 4, 5, 6, 7, 8, 9],
+      datasets: [
+        {
+          label: 'Test',
+          data: [
+            { x: 5, y: 0 },
+            { x: 6, y: 1 },
+            { x: 10, y: 2 },
+            { x: 30, y: 3 },
+            { x: 20, y: 4 },
+            { x: 30, y: 5 },
+            { x: 35, y: 6 },
+            { x: 20, y: 7 },
+            { x: 15, y: 8 },
+            { x: 10, y: 9 },
+            { x: 12, y: 10 },
+            { x: 10, y: 11 },
+          ]
+        }
+      ]
+    }
+  }
+
+  const canvas = document.querySelector('#chart')
+  const offscreenCanvas = canvas.transferControlToOffscreen()
+
+  const worker = new Worker('worker.js')
+  worker.postMessage({canvas: offscreenCanvas, config}, [offscreenCanvas])
+</script>
+
+</body>
+</html>
