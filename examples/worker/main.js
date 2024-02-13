@@ -61,8 +61,6 @@ const workers = data.map((chartData, chartIndex) => {
     type: 'line',
     options: {
       animation: false,
-      spanGaps: true,
-      showLine: true,
       indexAxis: 'y',
       datasets: {
         line: {
@@ -80,20 +78,8 @@ const workers = data.map((chartData, chartIndex) => {
       scales: {
         x: {
           min: 0,
-          max: 100,
-          ticks: {
-            minRotation: 0,
-            maxRotation: 0,
-            sampleSize: 1
-          }
+          max: 100
         },
-        y: {
-          ticks: {
-            minRotation: 0,
-            maxRotation: 0,
-            sampleSize: 1
-          }
-        }
       },
       plugins: {
         legend: {
