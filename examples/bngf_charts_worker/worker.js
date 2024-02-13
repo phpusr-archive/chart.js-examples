@@ -7,7 +7,6 @@ onmessage = function (event) {
 
   if (action === 'create') {
     const { canvas, config } = event.data
-    console.log('canvas', canvas, config)
     data.chart = new Chart(canvas, config);
   } else if (action === 'update') {
     const { chartData } = event.data

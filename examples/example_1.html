@@ -5,24 +5,40 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>Example</title>
 
   <!--suppress JSUnresolvedLibraryURL -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
-
-  <script src="main.js" type="module"></script>
 </head>
 <body>
 
 <div>
   <canvas id="myChart"></canvas>
+  <button onclick="triggerTooltip()">Trigger</button>
 </div>
 
 <script>
-new Chart(document.querySelector('#myChart'), {
+  const chartDom = document.querySelector('#myChart')
+
+  chartDom.addEventListener('mousemove', (e) => {
+    console.log('e', e)
+  })
+
+  const chart = new Chart(chartDom, {
   type: 'line',
   options: {
-    indexAxis: 'y'
+    indexAxis: 'y',
+    onClick: (e) => {
+      console.log('e', e)
+      const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
+      console.log('rel', canvasPosition)
+
+      // Substitute the appropriate scale IDs
+      const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+      const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+
+      console.log('x', dataX, 'y', dataY)
+    }
   },
   data: {
     labels: [2, 3, 4, 5, 6, 7, 8, 9],
@@ -47,6 +63,22 @@ new Chart(document.querySelector('#myChart'), {
     ]
   }
 })
+
+function triggerTooltip() {
+  const tooltip = chart.tooltip;
+  if (tooltip.getActiveElements().length > 0) {
+    tooltip.setActiveElements([], {x: 0, y: 0});
+  } else {
+    const chartArea = chart.chartArea;
+    tooltip.setActiveElements(
+      [
+        { datasetIndex: 0, index: 3 }
+      ]
+    );
+  }
+
+  chart.update();
+}
 </script>
 
 </body>
