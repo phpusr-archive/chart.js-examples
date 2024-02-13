@@ -3,15 +3,24 @@ importScripts('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.j
 const data = {}
 
 onmessage = function (event) {
-  //console.log('this', this)
-
-  const { action ,canvas, config } = event.data
-  console.log('canvas', canvas, event.data.config)
+  const { action } = event.data
 
   if (action === 'create') {
+    const { canvas, config } = event.data
+    console.log('canvas', canvas, config)
     data.chart = new Chart(canvas, config);
   } else if (action === 'update') {
-    data.chart.update()
+    const { chartData } = event.data
+    updateData(chartData)
   }
 
 };
+
+function updateData(chartData) {
+  chartData.forEach((dataset, datasetIndex) => {
+    data.chart.data.labels = dataset.map(it => it.time)
+    data.chart.data.datasets[datasetIndex * 2].data = dataset
+    data.chart.data.datasets[datasetIndex * 2 + 1].data = dataset
+  })
+  data.chart.update()
+}

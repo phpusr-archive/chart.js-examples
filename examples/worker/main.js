@@ -1,4 +1,4 @@
-const chartCount = 3
+const chartCount = 4
 const lineCount = 20
 const size = 20000
 const chunkSize = 600
@@ -7,6 +7,7 @@ const loadTime = 0
 
 const minValue = 0
 const maxValue = 100
+// data[Chart[Line[]]]
 const data = []
 
 for (let chartIndex = 0; chartIndex < chartCount; chartIndex++) {
@@ -16,7 +17,7 @@ for (let chartIndex = 0; chartIndex < chartCount; chartIndex++) {
   chartContainer.style.height = '90vh'
   const canvas = document.createElement('canvas')
   canvas.id = `chart-${chartIndex}`
-  canvas.setAttribute('height', '600px')
+  canvas.setAttribute('height', '800px')
   chartContainer.append(canvas)
 
   const chartData = []
@@ -55,7 +56,7 @@ const segment = {
   }
 }
 
-const charts = data.map((chartData, chartIndex) => {
+const workers = data.map((chartData, chartIndex) => {
   const config =  {
     type: 'line',
     options: {
@@ -117,7 +118,6 @@ const charts = data.map((chartData, chartIndex) => {
         yAxisKey: "time"
       },
       fill: lineIndex * 2 + 1,
-      segment,
       //spanGaps: true
     })
     config.data.datasets.push({
@@ -130,21 +130,19 @@ const charts = data.map((chartData, chartIndex) => {
         yAxisKey: "time"
       },
       fill: false,
-      segment,
       hidden: false
     })
   }
 
-  return new Chart(
-    document.getElementById(`chart-${chartIndex}`),
-    config
-  )
+  const canvas = document.getElementById(`chart-${chartIndex}`).transferControlToOffscreen()
+  const worker = new Worker('worker.js')
+  worker.postMessage({ action: 'create', canvas, config }, [canvas])
+
+  return worker
 })
 
 let offset = 0
 let loadTimeout
-let lastValue = null
-let datasetFills = {}
 
 updateData()
 
@@ -159,80 +157,15 @@ function updateData(diffOffset = 0) {
   }
 
   offset += diffOffset
-
-  data.forEach((chartData, chartIndex) => {
-    const chart = charts[chartIndex]
-    chart.data.labels = chartData[0].slice(offset, offset + chunkSize).map(it => it.time)
-    chart.data.datasets.forEach(dataset => {
-      if (dataset.fill !== false) {
-        datasetFills[dataset.label] = dataset.fill
-      }
-      dataset.fill = false
-
-      if (diffOffset === 0) {
-        dataset.data = []
-        return
-      }
-
-      if (diffOffset > 0) {
-        dataset.data = dataset.data.slice(diffOffset, dataset.data.length)
-        lastValue = dataset.data[dataset.data.length - 1] || lastValue
-
-        if (dataset.data.length === 0) {
-          dataset.data.push({
-            time: offset,
-            min: lastValue.min,
-            max: lastValue.max,
-            temp: true
-          })
-        }
-
-        dataset.data.push({
-          time: offset + chunkSize,
-          min: lastValue.min,
-          max: lastValue.max,
-          temp: true
-        })
-        return
-      }
-
-      dataset.data = dataset.data.slice(0, dataset.data.length + diffOffset)
-      lastValue = dataset.data[0] || lastValue
-
-      dataset.data.unshift({
-        time: offset,
-        min: lastValue.min,
-        max: lastValue.max,
-        temp: true
-      })
-
-      if (dataset.data.length === 1) {
-        dataset.data.push({
-          time: offset + chunkSize,
-          min: lastValue.min,
-          max: lastValue.max,
-          temp: true
-        })
-      }
-    })
-
-    chart.update()
-
-  })
-
   const offsetLocal = offset
-  loadTimeout = setTimeout(() => {
-    console.log('Loaded')
-    data.forEach((chartData, chartIndex) => {
-      const chart = charts[chartIndex]
-      chart.data.datasets.forEach((dataset, datasetIndex) => {
-        const dataIndex = Math.floor(datasetIndex / 2)
-        dataset.fill = datasetFills[dataset.label]
-        dataset.data = chartData[dataIndex].slice(offsetLocal, offsetLocal + chunkSize)
-      })
-      chart.update()
+
+  workers.forEach((worker, workerIndex) => {
+    const chartData = data[workerIndex].map(lineData => {
+      return lineData.slice(offsetLocal, offsetLocal + chunkSize)
     })
-  }, loadTime)
+
+    worker.postMessage({ action: 'update', chartData })
+  })
 }
 
 document.querySelector('body').addEventListener('wheel', ({ deltaY }) => {
