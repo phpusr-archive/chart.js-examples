@@ -11,8 +11,6 @@
   <!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
 
-  <script src="main.js" type="module"></script>
-
   <style>
     .container {
         padding: 0 20px;
@@ -20,12 +18,65 @@
     #charts {
         display: flex;
     }
+    #form {
+        display: flex;
+    }
+    .column {
+        padding-right: 30px;
+    }
+    .column div {
+        padding-bottom: 5px;
+        display: flex;
+    }
+    .column label {
+        display: block;
+        width: 190px;
+    }
+    .column input {
+        width: 60px;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Графики (много потоков)</h1>
+
+  <form id="form">
+    <div class="column">
+      <div>
+        <label>Кол-во графиков:</label>
+        <input name="chartCount" type="number" min="1" max="20" value="4">
+      </div>
+      <div>
+        <label>Кол-во кривых на графике:</label>
+        <input name="lineCount" type="number" min="1" max="60" value="20">
+      </div>
+      <div>
+        <label>Кол-во выводимых точек:</label>
+        <input name="chunkSize" type="number" min="3" max="1000" value="600">
+      </div>
+      <div>
+        <label>Общее кол-во точек:</label>
+        <input name="size" type="number" min="10" max="100000" value="20000">
+      </div>
+      <div>
+        <label>Сдвигаемое кол-во точек:</label>
+        <input name="diffSize" type="number" min="1" max="1000" value="30">
+      </div>
+    </div>
+    <div class="column">
+      <div>
+        <label>Мин. значение кривой:</label>
+        <input name="minValue" type="number" min="-1000" max="1000" value="0">
+      </div>
+      <div>
+        <label>Макс. значение кривой:</label>
+        <input name="maxValue" type="number" min="-1000" max="1000" value="100">
+      </div>
+      <button>OK</button>
+    </div>
+  </form>
 
   <div id="charts"></div>
 
@@ -35,6 +86,11 @@
   </div>
 </div>
 
+
+<script src="main.js" type="module"></script>
+<script>
+
+</script>
 
 </body>
 </html>
