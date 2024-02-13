@@ -3,7 +3,7 @@ const lineCount = 20
 const size = 20000
 const chunkSize = 600
 const diffSize = 30
-const loadTime = 0
+const loadingStatus = false
 
 const minValue = 0
 const maxValue = 100
@@ -60,8 +60,6 @@ const charts = data.map((chartData, chartIndex) => {
     type: 'line',
     options: {
       animation: false,
-      spanGaps: true,
-      showLine: true,
       indexAxis: 'y',
       datasets: {
         line: {
@@ -79,19 +77,7 @@ const charts = data.map((chartData, chartIndex) => {
       scales: {
         x: {
           min: 0,
-          max: 100,
-          ticks: {
-            minRotation: 0,
-            maxRotation: 0,
-            sampleSize: 1
-          }
-        },
-        y: {
-          ticks: {
-            minRotation: 0,
-            maxRotation: 0,
-            sampleSize: 1
-          }
+          max: 100
         }
       },
       plugins: {
@@ -163,76 +149,77 @@ function updateData(diffOffset = 0) {
   data.forEach((chartData, chartIndex) => {
     const chart = charts[chartIndex]
     chart.data.labels = chartData[0].slice(offset, offset + chunkSize).map(it => it.time)
-    chart.data.datasets.forEach(dataset => {
-      if (dataset.fill !== false) {
-        datasetFills[dataset.label] = dataset.fill
-      }
-      dataset.fill = false
 
-      if (diffOffset === 0) {
-        dataset.data = []
-        return
-      }
+    if (loadingStatus) {
+      chart.data.datasets.forEach(dataset => {
+        if (dataset.fill !== false) {
+          datasetFills[dataset.label] = dataset.fill
+        }
+        dataset.fill = false
 
-      if (diffOffset > 0) {
-        dataset.data = dataset.data.slice(diffOffset, dataset.data.length)
-        lastValue = dataset.data[dataset.data.length - 1] || lastValue
+        if (diffOffset === 0) {
+          dataset.data = []
+          return
+        }
 
-        if (dataset.data.length === 0) {
+        if (diffOffset > 0) {
+          dataset.data = dataset.data.slice(diffOffset, dataset.data.length)
+          lastValue = dataset.data[dataset.data.length - 1] || lastValue
+
+          if (dataset.data.length === 0) {
+            dataset.data.push({
+              time: offset,
+              min: lastValue.min,
+              max: lastValue.max,
+              temp: true
+            })
+          }
+
           dataset.data.push({
-            time: offset,
+            time: offset + chunkSize,
+            min: lastValue.min,
+            max: lastValue.max,
+            temp: true
+          })
+          return
+        }
+
+        dataset.data = dataset.data.slice(0, dataset.data.length + diffOffset)
+        lastValue = dataset.data[0] || lastValue
+
+        dataset.data.unshift({
+          time: offset,
+          min: lastValue.min,
+          max: lastValue.max,
+          temp: true
+        })
+
+        if (dataset.data.length === 1) {
+          dataset.data.push({
+            time: offset + chunkSize,
             min: lastValue.min,
             max: lastValue.max,
             temp: true
           })
         }
-
-        dataset.data.push({
-          time: offset + chunkSize,
-          min: lastValue.min,
-          max: lastValue.max,
-          temp: true
-        })
-        return
-      }
-
-      dataset.data = dataset.data.slice(0, dataset.data.length + diffOffset)
-      lastValue = dataset.data[0] || lastValue
-
-      dataset.data.unshift({
-        time: offset,
-        min: lastValue.min,
-        max: lastValue.max,
-        temp: true
       })
-
-      if (dataset.data.length === 1) {
-        dataset.data.push({
-          time: offset + chunkSize,
-          min: lastValue.min,
-          max: lastValue.max,
-          temp: true
-        })
-      }
-    })
+    }
 
     chart.update()
-
   })
 
   const offsetLocal = offset
-  loadTimeout = setTimeout(() => {
-    console.log('Loaded')
-    data.forEach((chartData, chartIndex) => {
-      const chart = charts[chartIndex]
-      chart.data.datasets.forEach((dataset, datasetIndex) => {
-        const dataIndex = Math.floor(datasetIndex / 2)
+  data.forEach((chartData, chartIndex) => {
+    const chart = charts[chartIndex]
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      const dataIndex = Math.floor(datasetIndex / 2)
+      if (loadingStatus) {
         dataset.fill = datasetFills[dataset.label]
-        dataset.data = chartData[dataIndex].slice(offsetLocal, offsetLocal + chunkSize)
-      })
-      chart.update()
+      }
+      dataset.data = chartData[dataIndex].slice(offsetLocal, offsetLocal + chunkSize)
     })
-  }, loadTime)
+    chart.update()
+  })
 }
 
 document.querySelector('body').addEventListener('wheel', ({ deltaY }) => {
