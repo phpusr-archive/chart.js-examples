@@ -3,11 +3,10 @@ const lineCount = 20
 const size = 20000
 const chunkSize = 600
 const diffSize = 30
-const loadTime = 0
 
 const minValue = 0
 const maxValue = 100
-// data[Chart[Line[]]]
+// Structure: Data[Chart[Line[]]]
 const data = []
 
 for (let chartIndex = 0; chartIndex < chartCount; chartIndex++) {
