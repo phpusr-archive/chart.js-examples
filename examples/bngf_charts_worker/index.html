@@ -12,6 +12,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
 
   <style>
+    body {
+        font-family: "Arial", sans-serif;
+    }
     .container {
         padding: 0 20px;
     }
@@ -30,10 +33,19 @@
     }
     .column label {
         display: block;
-        width: 190px;
+        width: 210px;
     }
     .column input {
         width: 60px;
+    }
+    button {
+        border-radius: 5px;
+        padding: 5px 10px;
+        background: #007dfd;
+        color: white;
+        border: 1px solid #0068d7;
+        font-size: 14px;
+        font-weight: bold;
     }
   </style>
 </head>
@@ -75,10 +87,11 @@
         <input name="maxValue" type="number" min="-1000" max="1000" value="100">
       </div>
       <div>
-        <label>Много потоков</label>
-        <input type="checkbox" name="multithread" checked="checked">
+        <label for="multithread">Много потоков</label>
+        <input id="multithread" type="checkbox" name="multithread" checked="checked">
       </div>
-      <button>OK</button>
+
+      <button>Обновить</button>
     </div>
   </form>
 
