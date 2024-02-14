@@ -183,22 +183,26 @@ class ChartApp {
     }
 
     for (let lineIndex = 0; lineIndex < this.lineCount; lineIndex++) {
+      const red = Math.round(Math.random() * 255)
+      const green = Math.round(Math.random() * 255)
+      const blue = Math.round(Math.random() * 255)
+      const lineColor = `rgba(${red}, ${green}, ${blue}, 0.9)`
+
       config.data.datasets.push({
         label: `Line ${lineIndex} (min)`,
-        //backgroundColor: "#693a9d",
-        //borderColor: "#693a9d",
+        borderColor: lineColor,
+        backgroundColor: lineColor,
         data: [],
         parsing: {
           xAxisKey: "min",
           yAxisKey: "time"
         },
         fill: lineIndex * 2 + 1,
-        //spanGaps: true
       })
       config.data.datasets.push({
         label: `Line ${lineIndex} (max)`,
-        //backgroundColor: "#693a9d",
-        //borderColor: "#693a9d",
+        borderColor: lineColor,
+        backgroundColor: lineColor,
         data: [],
         parsing: {
           xAxisKey: "max",
