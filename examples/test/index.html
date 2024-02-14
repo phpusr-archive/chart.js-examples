@@ -78,7 +78,6 @@ function triggerTooltip() {
   if (tooltip.getActiveElements().length > 0) {
     tooltip.setActiveElements([], {x: 0, y: 0});
   } else {
-    const chartArea = chart.chartArea;
     tooltip.setActiveElements(
       [
         { datasetIndex: 0, index: 3 }
