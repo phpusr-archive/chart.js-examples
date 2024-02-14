@@ -9,10 +9,19 @@
 
   <!--suppress JSUnresolvedLibraryURL -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  <style>
+      .container {
+          padding: 20px;
+      }
+      canvas {
+          border: 1px solid black;
+          padding: 20px;
+      }
+  </style>
 </head>
 <body>
 
-<div>
+<div class="container">
   <canvas id="myChart"></canvas>
   <button onclick="triggerTooltip()">Trigger</button>
 </div>
@@ -20,9 +29,9 @@
 <script>
   const chartDom = document.querySelector('#myChart')
 
-  chartDom.addEventListener('mousemove', (e) => {
+  /*chartDom.addEventListener('mousemove', (e) => {
     console.log('e', e)
-  })
+  })*/
 
   const chart = new Chart(chartDom, {
   type: 'line',
