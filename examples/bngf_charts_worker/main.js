@@ -111,9 +111,19 @@ class ChartApp {
 
   createWorkers() {
     this.workers = this.data.map((chartData, chartIndex) => {
-      const canvas = document.getElementById(`chart-${chartIndex}`).transferControlToOffscreen()
+      const canvas = document.getElementById(`chart-${chartIndex}`)
+      const transferedCanvas = canvas.transferControlToOffscreen()
       const worker = new Worker('worker.js')
-      worker.postMessage({ action: 'create', canvas, config: this.getConfig() }, [canvas])
+      worker.postMessage({ action: 'create', canvas: transferedCanvas, config: this.getConfig() }, [transferedCanvas])
+
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = e.target.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        //console.log(x, y)
+        worker.postMessage({ action: 'mousemove', x, y })
+      })
+
       return worker
     })
   }
