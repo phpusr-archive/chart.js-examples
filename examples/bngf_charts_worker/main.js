@@ -7,7 +7,11 @@ class ChartApp {
   diffSize = 0
   minValue = 0
   maxValue = 0
+  multithread = false
 
+  // For single thread
+  charts = []
+  // For multi thread
   workers = []
   // Structure: Data[Chart[Line[]]]
   data = []
@@ -55,10 +59,10 @@ class ChartApp {
     this.diffSize = +formData.get('diffSize')
     this.minValue = +formData.get('minValue')
     this.maxValue = +formData.get('maxValue')
+    this.multithread = formData.get('multithread') === 'on'
 
     this.generateData()
     this.createCharts()
-    this.createWorkers()
     this.updateData()
   }
 
@@ -97,35 +101,48 @@ class ChartApp {
   }
 
   createCharts() {
+    this.charts = []
+    this.workers = []
+
     for (let chartIndex = 0; chartIndex < this.chartCount; chartIndex++) {
+      const container = document.createElement('div')
+      this.chartsDom.append(container)
       const canvas = document.createElement('canvas')
-      canvas.id = `chart-${chartIndex}`
+      container.append(canvas)
+
       const { clientHeight, clientWidth } = document.documentElement
-      const height = Math.max(600, clientHeight - 250)
-      const width = Math.max(300, clientWidth / this.chartCount - 10)
-      canvas.setAttribute('height', height + 'px')
-      canvas.setAttribute('width', width + 'px')
-      this.chartsDom.append(canvas)
+      const width = Math.min(500, Math.max(300, clientWidth / this.chartCount - 20)) + 'px'
+      const height = Math.max(600, clientHeight - 250) + 'px'
+      container.style.width = width
+      container.style.height = height
+
+      canvas.id = `chart-${chartIndex}`
+      canvas.setAttribute('width', width)
+      canvas.setAttribute('height', height)
+      console.log('w', width, 'h', height)
+
+      if (this.multithread) {
+        this.workers.push(this.createWorker(canvas))
+      } else {
+        this.charts.push(new Chart(canvas, this.getConfig()))
+      }
     }
   }
 
-  createWorkers() {
-    this.workers = this.data.map((chartData, chartIndex) => {
-      const canvas = document.getElementById(`chart-${chartIndex}`)
-      const transferedCanvas = canvas.transferControlToOffscreen()
-      const worker = new Worker('worker.js')
-      worker.postMessage({ action: 'create', canvas: transferedCanvas, config: this.getConfig() }, [transferedCanvas])
+  createWorker(canvas) {
+    const offscreenCanvas = canvas.transferControlToOffscreen()
+    const worker = new Worker('worker.js')
+    worker.postMessage({ action: 'create', canvas: offscreenCanvas, config: this.getConfig() }, [offscreenCanvas])
 
-      canvas.addEventListener('mousemove', (e) => {
-        const rect = e.target.getBoundingClientRect()
-        const x = e.clientX - rect.left
-        const y = e.clientY - rect.top
-        //console.log(x, y)
-        worker.postMessage({ action: 'mousemove', x, y })
-      })
-
-      return worker
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = e.target.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+      //console.log(x, y)
+      worker.postMessage({ action: 'mousemove', x, y })
     })
+
+    return worker
   }
 
   updateData(diffOffset = 0) {
@@ -134,6 +151,17 @@ class ChartApp {
     }
 
     this.offset += diffOffset
+
+    this.charts.forEach((chart, chartIndex) => {
+      this.data[chartIndex].forEach((lineData, lineIndex) => {
+        const dataset = lineData.slice(this.offset, this.offset + this.chunkSize)
+        //console.log('ds', dataset)
+        chart.data.labels = dataset.map(it => it.time)
+        chart.data.datasets[lineIndex * 2].data = dataset
+        chart.data.datasets[lineIndex * 2 + 1].data = dataset
+      })
+      chart.update()
+    })
 
     this.workers.forEach((worker, workerIndex) => {
       const chartData = this.data[workerIndex].map(lineData => {
