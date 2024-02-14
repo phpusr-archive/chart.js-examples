@@ -134,12 +134,20 @@ class ChartApp {
     const worker = new Worker('worker.js')
     worker.postMessage({ action: 'create', canvas: offscreenCanvas, config: this.getConfig() }, [offscreenCanvas])
 
+    let timeout = null
+
     canvas.addEventListener('mousemove', (e) => {
-      const rect = e.target.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-      //console.log(x, y)
-      worker.postMessage({ action: 'mousemove', x, y })
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+
+      timeout = setTimeout(() => {
+        const rect = e.target.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        //console.log(x, y)
+        worker.postMessage({ action: 'mousemove', x, y })
+      }, 200)
     })
 
     return worker
