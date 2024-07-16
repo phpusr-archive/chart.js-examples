@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Example</title>
+
+  <!--suppress JSUnresolvedLibraryURL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  <!--suppress JSUnresolvedLibraryURL -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-pattern@1.1.0"></script>
+
+  <style>
+      .container {
+          padding: 20px;
+      }
+      canvas {
+          border: 1px solid black;
+          padding: 20px;
+      }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <canvas id="myChart"></canvas>
+  <button onclick="triggerTooltip()">Trigger</button>
+</div>
+
+<script type="module">
+  const img = await loadImage()
+  console.log('img', img)
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+
+  const chartDom = document.querySelector('#myChart')
+
+  const chart = new Chart(chartDom, {
+  type: 'line',
+  options: {
+    indexAxis: 'y',
+    scales: {
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: '%'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      }
+    }
+  },
+  data: {
+    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    datasets: [
+      {
+        label: 'C1',
+        fill: true,
+        backgroundColor: createGridPattern('rgb(255, 235, 15)'),
+        borderColor: 'rgb(227, 211, 50)',
+        data: [
+          { x: 0, y: 1 },
+          { x: 1, y: 2 },
+          { x: 1, y: 3 },
+          { x: 2, y: 4 },
+          { x: 2, y: 5 },
+          { x: 3, y: 6 },
+          { x: 3, y: 7 },
+          { x: 2, y: 8 },
+          { x: 2, y: 9 },
+        ]
+      },
+      {
+        label: 'C2',
+        fill: true,
+        backgroundColor: createGridPattern('rgba(153, 102, 255, 1)'),
+        borderColor: 'rgba(153, 102, 255, 1)',
+        data: [
+          { x: 1, y: 1 },
+          { x: 1, y: 2 },
+          { x: 1, y: 3 },
+          { x: 2, y: 4 },
+          { x: 2, y: 4 },
+          { x: 4, y: 6 },
+          { x: 4, y: 7 },
+          { x: 5, y: 8 },
+          { x: 5, y: 9 },
+        ]
+      },
+      {
+        label: 'C3',
+        fill: true,
+        backgroundColor: createGridPattern('rgba(75, 192, 192, 1)'),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        data: [
+          { x: 0, y: 1 },
+          { x: 1, y: 2 },
+          { x: 1, y: 3 },
+          { x: 2, y: 4 },
+          { x: 2, y: 4 },
+          { x: 4, y: 6 },
+          { x: 4, y: 7 },
+          { x: 5, y: 8 },
+          { x: 5, y: 9 },
+        ]
+      }
+      ,
+      {
+        label: 'C4',
+        fill: true,
+        data: [
+          { x: 0, y: 1 },
+          { x: 1, y: 2 },
+          { x: 1, y: 3 },
+          { x: 2, y: 4 },
+          { x: 2, y: 4 },
+          { x: 4, y: 6 },
+          { x: 4, y: 7 },
+          { x: 5, y: 8 },
+          { x: 5, y: 9 },
+        ]
+      }
+    ]
+  }
+})
+
+// Функция для создания CanvasPattern с сеткой под углом 45 градусов
+function createGridPattern(color) {
+  console.log('createGridPattern', color)
+  const canvas = document.createElement('canvas');
+  const cellSize = 10
+  canvas.width = cellSize;
+  canvas.height = cellSize;
+  const ctx = canvas.getContext('2d');
+
+  // Настройка линии
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+
+  // Рисуем диагональные линии
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(cellSize, cellSize);
+  ctx.moveTo(cellSize, 0);
+  ctx.lineTo(0, cellSize);
+  ctx.stroke();
+
+  // Создаем паттерн
+  return ctx.createPattern(canvas, 'repeat');
+}
+
+function loadImage() {
+  const img = new Image();
+  img.src = 'https://www.chartjs.org/img/chartjs-logo.svg'
+
+  return new Promise((resolve) => {
+    img.onload = function() {
+      resolve(img)
+    }
+  })
+}
+</script>
+
+</body>
+</html>
