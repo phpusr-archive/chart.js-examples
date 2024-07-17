@@ -5,3 +5,4 @@
 - [Графики в однопоточном режиме](https://phpusr-archive.github.io/chart.js-examples/examples/bngf_charts)
 - [Простой пример работы с Worker](https://phpusr-archive.github.io/chart.js-examples/examples/simple_worker)
 - [Пример с инвертированной осью X](https://phpusr-archive.github.io/chart.js-examples/examples/reversed_scale)
+- [Пример с отображением гистограмм газов](https://phpusr-archive.github.io/chart.js-examples/examples/chromatograph_chart)
