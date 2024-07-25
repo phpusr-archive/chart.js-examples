@@ -76,7 +76,7 @@ export const options = {
       "position": "top",
       "beginAtZero": false,
       "grid": {
-        "borderColor": "#008000",
+        "borderColor": "#801300",
         "borderDash": [
           5,
           5
@@ -84,13 +84,13 @@ export const options = {
         "borderDashOffset": 0,
         "display": true,
         "drawBorder": true,
-        "drawOnChartArea": false,
+        "drawOnChartArea": !false,
         "drawTicks": true,
         "lineWidth": 1,
         "offset": false,
         "tickLength": 4,
         "borderWidth": 1,
-        "color": "rgba(0,0,0,0.1)"
+        "color": "rgba(121,242,0,0.87)"
       },
       "ticks": {
         "padding": 0,
