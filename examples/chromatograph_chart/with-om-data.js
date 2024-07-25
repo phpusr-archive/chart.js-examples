@@ -129,67 +129,6 @@ export const options = {
       "bounds": "ticks",
       "grace": 0,
       "id": "af3fa9f9-2fc2-490f-996a-fcce4d50f493"
-    },
-    "a75c99ef-9a65-4b2d-b6d6-ed64dd7b02fb": {
-      "axis": "x",
-      //"type": "bngfLineScale",
-      "stacked": true,
-      "position": "top",
-      "beginAtZero": false,
-      "grid": {
-        "borderColor": "#191970",
-        "borderDash": [
-          5,
-          5
-        ],
-        "borderDashOffset": 0,
-        "display": true,
-        "drawBorder": true,
-        "drawOnChartArea": false,
-        "drawTicks": true,
-        "lineWidth": 1,
-        "offset": false,
-        "tickLength": 4,
-        "borderWidth": 1,
-        "color": "rgba(0,0,0,0.1)"
-      },
-      "ticks": {
-        "padding": 0,
-        "maxRotation": 0,
-        "color": "#b7b7b7",
-        "minRotation": 0,
-        "mirror": false,
-        "textStrokeWidth": 0,
-        "textStrokeColor": "",
-        "display": true,
-        "autoSkip": true,
-        "autoSkipPadding": 3,
-        "labelOffset": 0,
-        "minor": {},
-        "major": {},
-        "align": "center",
-        "crossAlign": "near",
-        "showLabelBackdrop": false,
-        "backdropColor": "rgba(255, 255, 255, 0.75)",
-        "backdropPadding": 2
-      },
-      "title": {
-        "display": true,
-        "text": "С2 отн.",
-        "padding": {
-          "top": 4,
-          "bottom": 4
-        },
-        "color": "#666"
-      },
-      "min": 0,
-      "max": 100,
-      "display": true,
-      "offset": false,
-      "reverse": false,
-      "bounds": "ticks",
-      "grace": 0,
-      "id": "a75c99ef-9a65-4b2d-b6d6-ed64dd7b02fb"
     }
   },
   "maintainAspectRatio": false,
@@ -297,7 +236,7 @@ export const datasets = [
       "xAxisKey": "114.max",
       "yAxisKey": "time"
     },
-    "xAxisID": "a75c99ef-9a65-4b2d-b6d6-ed64dd7b02fb",
+    "xAxisID": "af3fa9f9-2fc2-490f-996a-fcce4d50f493",
     "yAxisID": "time",
     "indexAxis": "y",
     "elements": {
