@@ -72,7 +72,7 @@ export const options = {
       //"type": "bngfLineScale",
       "suggestedMin": 0,
       "suggestedMax": 100,
-      //"stacked": true,
+      "stacked": true,
       "position": "top",
       "beginAtZero": false,
       "grid": {
@@ -133,7 +133,7 @@ export const options = {
     "a75c99ef-9a65-4b2d-b6d6-ed64dd7b02fb": {
       "axis": "x",
       //"type": "bngfLineScale",
-      //"stacked": true,
+      "stacked": true,
       "position": "top",
       "beginAtZero": false,
       "grid": {
