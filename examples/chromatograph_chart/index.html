@@ -26,17 +26,10 @@
 
 <div class="container">
   <canvas id="myChart"></canvas>
-  <button onclick="triggerTooltip()">Trigger</button>
 </div>
 
 <script type="module">
-  const img = await loadImage()
-  console.log('img', img)
-  const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')
-
   const chartDom = document.querySelector('#myChart')
-
   const chart = new Chart(chartDom, {
   type: 'line',
   options: {
@@ -154,17 +147,6 @@ function createGridPattern(color) {
 
   // Создаем паттерн
   return ctx.createPattern(canvas, 'repeat');
-}
-
-function loadImage() {
-  const img = new Image();
-  img.src = 'https://www.chartjs.org/img/chartjs-logo.svg'
-
-  return new Promise((resolve) => {
-    img.onload = function() {
-      resolve(img)
-    }
-  })
 }
 </script>
 
