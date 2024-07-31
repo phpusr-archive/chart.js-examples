@@ -5,6 +5,15 @@ export { data }
 
 export const labels = data.map(it => it.time)
 
+const drawCirclePlugin = {
+  id: 'drawCircle',
+  beforeDraw: (chart) => {
+    console.log('beforeDraw')
+    const circleScale = chart.scales['af3fa9f9-2fc2-490f-996a-fcce4d50f493'];
+    circleScale.drawCircle();
+  }
+}
+
 export const options = {
   "indexAxis": "y",
   "scales": {
@@ -69,7 +78,7 @@ export const options = {
     },
     "af3fa9f9-2fc2-490f-996a-fcce4d50f493": {
       "axis": "x",
-      //"type": "bngfLineScale",
+      "type": "bngfLineScale",
       "suggestedMin": 0,
       "suggestedMax": 100,
       "stacked": true,
@@ -117,7 +126,7 @@ export const options = {
         "text": "С1 отн.",
         "padding": {
           "top": 4,
-          "bottom": 4
+          "bottom": 50
         },
         "color": "#666"
       },
@@ -153,32 +162,10 @@ export const options = {
     }
   },
   "plugins": {
-    "legend": {
-      "display": false,
-      "labels": {}
+    legend: {
+      display: false
     },
-    "tooltip": {},
-    "updateChartArea": {
-      "isUpdateRequired": true
-    },
-    "datalabels": {
-      "id": "datalabels",
-      "backgroundColor": "#ffffff",
-      "padding": {
-        "top": 2,
-        "right": 2,
-        "bottom": 0,
-        "left": 2
-      },
-      "borderRadius": 2,
-      "borderWidth": 1,
-      "anchor": "center",
-      "clamp": false,
-      "listeners": {}
-    },
-    "updateScales": {
-      "isUpdateRequired": true
-    }
+    //drawCircle: drawCirclePlugin
   },
   "animation": false,
   "layout": {
