@@ -125,8 +125,8 @@ export const options = {
         "display": true,
         "text": "С1 отн.",
         "padding": {
-          "top": 4,
-          "bottom": 50
+          "top": 0,
+          "bottom": 0
         },
         "color": "#666"
       },
@@ -170,7 +170,7 @@ export const options = {
   "animation": false,
   "layout": {
     "padding": {
-      "top": 0
+      "top": 60
     }
   }
 }
