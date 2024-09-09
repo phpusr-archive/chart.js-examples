@@ -29,6 +29,18 @@
 </div>
 
 <script type="module">
+  const BORDER_COLOR = '#828282'
+  const COLORS = [
+    '#ffff00',
+    '#ff8000',
+    '#ff0000',
+    '#00ff00',
+    '#00fffd',
+    '#0000ff',
+    '#235f5d',
+    '#ff00ff',
+    '#e8be76'
+  ]
   const chartDom = document.querySelector('#myChart')
   const chart = new Chart(chartDom, {
   type: 'line',
@@ -56,8 +68,8 @@
       {
         label: 'C1',
         fill: true,
-        backgroundColor: createGridPattern('rgb(255, 235, 15)'),
-        borderColor: 'rgb(227, 211, 50)',
+        backgroundColor: createGridPattern(COLORS[0]),
+        borderColor: BORDER_COLOR,
         data: [
           { x: 0, y: 1 },
           { x: 1, y: 2 },
@@ -68,13 +80,21 @@
           { x: 3, y: 7 },
           { x: 2, y: 8 },
           { x: 2, y: 9 },
-        ]
+        ],
+        elements: {
+          point: {
+            radius: 0
+          },
+          line: {
+            borderWidth: 1
+          }
+        }
       },
       {
         label: 'C2',
         fill: true,
-        backgroundColor: createGridPattern('rgba(153, 102, 255, 1)'),
-        borderColor: 'rgba(153, 102, 255, 1)',
+        backgroundColor: createGridPattern(COLORS[1]),
+        borderColor: BORDER_COLOR,
         data: [
           { x: 1, y: 1 },
           { x: 1, y: 2 },
@@ -85,13 +105,21 @@
           { x: 4, y: 7 },
           { x: 5, y: 8 },
           { x: 5, y: 9 },
-        ]
+        ],
+        elements: {
+          point: {
+            radius: 0
+          },
+          line: {
+            borderWidth: 1
+          }
+        }
       },
       {
         label: 'C3',
         fill: true,
-        backgroundColor: createGridPattern('rgba(75, 192, 192, 1)'),
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: createGridPattern(COLORS[2]),
+        borderColor: BORDER_COLOR,
         data: [
           { x: 0, y: 1 },
           { x: 1, y: 2 },
@@ -102,12 +130,22 @@
           { x: 4, y: 7 },
           { x: 5, y: 8 },
           { x: 5, y: 9 },
-        ]
+        ],
+        elements: {
+          point: {
+            radius: 0
+          },
+          line: {
+            borderWidth: 1
+          }
+        }
       }
       ,
       {
         label: 'C4',
         fill: true,
+        backgroundColor: createGridPattern(COLORS[4]),
+        borderColor: BORDER_COLOR,
         data: [
           { x: 0, y: 1 },
           { x: 1, y: 2 },
@@ -118,7 +156,15 @@
           { x: 4, y: 7 },
           { x: 5, y: 8 },
           { x: 5, y: 9 },
-        ]
+        ],
+        elements: {
+          point: {
+            radius: 0
+          },
+          line: {
+            borderWidth: 1
+          }
+        }
       }
     ]
   }
@@ -135,7 +181,7 @@ function createGridPattern(color) {
 
   // Настройка линии
   ctx.strokeStyle = color;
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 0.8;
 
   // Рисуем диагональные линии
   ctx.beginPath();
