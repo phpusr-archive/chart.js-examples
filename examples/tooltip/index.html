@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Example</title>
+
+  <!--suppress JSUnresolvedLibraryURL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  <style>
+      .container {
+          padding: 20px;
+      }
+      canvas {
+          border: 1px solid black;
+          padding: 20px;
+      }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <canvas id="myChart"></canvas>
+  <button onclick="triggerTooltip()">Trigger</button>
+</div>
+
+<script>
+  const chartDom = document.querySelector('#myChart')
+  const chart = new Chart(chartDom, {
+  type: 'line',
+  options: {
+    indexAxis: 'y',
+    plugins: {
+      tooltip: {
+        filter(tooltipItem, data) {
+          console.log('item', tooltipItem, 'data', data)
+          if (!data.labels) {
+            return
+          }
+
+          const label = data.labels[tooltipItem.index]
+          return label !== "Red"
+        }
+      }
+    }
+  },
+  data: {
+    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    datasets: [
+      {
+        label: 'Test 1',
+        data: [
+          { x: 1, y: 1 },
+          { x: 2, y: 2 },
+          { x: 1, y: 3 },
+          { x: 2, y: 4 },
+          { x: 1, y: 5 },
+          { x: 2, y: 6 },
+          { x: 1, y: 7 },
+          { x: 2, y: 8 },
+          { x: 1, y: 9 },
+        ]
+      },
+      {
+        label: 'Test 2',
+        data: [
+          { x: 1, y: 1 },
+          { x: 5, y: 2 },
+          { x: 4, y: 3 },
+          { x: 5, y: 4 },
+          { x: 4, y: 5 },
+          { x: 5, y: 6 },
+          { x: 4, y: 7 },
+          { x: 5, y: 8 },
+          { x: 4, y: 9 },
+        ]
+      }
+    ]
+  }
+})
+</script>
+
+</body>
+</html>
