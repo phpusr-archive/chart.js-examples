@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Example</title>
+
+  <!--suppress JSUnresolvedLibraryURL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  <style>
+      .container {
+          padding: 20px;
+      }
+      canvas {
+          border: 1px solid black;
+          padding: 20px;
+      }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <canvas id="myChart"></canvas>
+</div>
+
+<script>
+  const chartDom = document.querySelector('#myChart')
+
+  const chart = new Chart(chartDom, {
+  type: 'line',
+  options: {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Дата'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Стоимость дня'
+        },
+        min: 0
+      }
+    }
+  },
+  data: {
+    datasets: [
+      {
+        label: 'Башнефть',
+        data: [
+          { x: '01.01.2025', y: 10 },
+          { x: '02.01.2025', y: 11 },
+          { x: '03.01.2025', y: 9 },
+          { x: '04.01.2025', y: 10 },
+          { x: '05.01.2025', y: 12 },
+        ]
+      },
+      {
+        label: 'Лукоил',
+        data: [
+          { x: '01.01.2025', y: 12 },
+          { x: '02.01.2025', y: 9 },
+          { x: '03.01.2025', y: 15 },
+          { x: '05.01.2025', y: 14 },
+        ]
+      }
+    ]
+  }
+})
+</script>
+
+</body>
+</html>
