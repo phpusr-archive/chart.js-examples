@@ -8,7 +8,7 @@
   <title>Example</title>
 
   <!--suppress JSUnresolvedLibraryURL -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <style>
       .container {
           padding: 20px;
@@ -31,6 +31,22 @@
   const chart = new Chart(chartDom, {
   type: 'line',
   options: {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Title',
+        font: {
+          size: 22
+        }
+      },
+      subtitle: {
+        display: true,
+        text: 'Custom Chart Subtitle',
+        font: {
+          size: 18
+        }
+      }
+    },
     scales: {
       x: {
         type: 'linear',
