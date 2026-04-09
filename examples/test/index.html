@@ -16,6 +16,7 @@
       canvas {
           border: 1px solid black;
           padding: 20px;
+          height: 600px;
       }
   </style>
 </head>
@@ -29,57 +30,52 @@
 <script>
   const chartDom = document.querySelector('#myChart')
 
-  /*chartDom.addEventListener('mousemove', (e) => {
-    console.log('e', e)
-  })*/
-
   const chart = new Chart(chartDom, {
   type: 'line',
   options: {
-    indexAxis: 'y',
-    onClick: (e) => {
-      console.log('e', e)
-      const canvasPosition = Chart.helpers.getRelativePosition(e, chart);
-      console.log('rel', canvasPosition)
-
-      // Substitute the appropriate scale IDs
-      const dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
-      const dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
-
-      console.log('x', dataX, 'y', dataY)
-    }
+    responsive: false,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      datalabels: {
+        display: true,
+        align: 'top',
+        formatter: (value) => value.x
+      }
+    },
+    elements: {
+      point: {
+        radius: 4
+      }
+    },
+    scales: {
+      x: {
+        type: 'linear',
+        title: {
+          display: true,
+          text: 'Value'
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Voltage'
+        },
+        min: 0,
+        max: 5
+      }
+    },
   },
   data: {
-    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     datasets: [
       {
         label: 'Test 1',
         data: [
-          { x: 1, y: 1 },
-          { x: 2, y: 2 },
-          { x: 1, y: 3 },
-          { x: 2, y: 4 },
-          { x: 1, y: 5 },
-          { x: 2, y: 6 },
-          { x: 1, y: 7 },
-          { x: 2, y: 8 },
-          { x: 1, y: 9 },
-        ]
-      },
-      {
-        lineTension: 1,
-        // stepped: true,
-        label: 'Test 2',
-        data: [
-          { x: 4, y: 1 },
-          { x: 5, y: 2 },
-          { x: 4, y: 3 },
-          { x: 5, y: 4 },
-          { x: 4, y: 5 },
-          { x: 5, y: 6 },
-          { x: 4, y: 7 },
-          { x: 5, y: 8 },
-          { x: 4, y: 9 },
+          { x: 0.6, y: 1 },
+          { x: 1.32, y: 3.05 },
+          { x: 0, y: 5 },
         ]
       }
     ]
