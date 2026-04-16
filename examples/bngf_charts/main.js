@@ -174,7 +174,10 @@ function updateData(diffOffset = 0) {
               temp: true
             })
           }
-
+          new Chart(
+            document.getElementById(`chart-${chartIndex}`),
+            config
+          )
           dataset.data.push({
             time: offset + chunkSize,
             min: lastValue.min,
