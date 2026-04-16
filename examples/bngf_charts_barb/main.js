@@ -60,7 +60,8 @@ function createChart(chartIndex) {
           radius: 0
         },
         line: {
-          borderWidth: 2
+          borderWidth: 2,
+          //borderJoinStyle: 'round',
         }
       },
       scales: {
@@ -118,5 +119,4 @@ function createChart(chartIndex) {
     config
   )
 }
-
 
